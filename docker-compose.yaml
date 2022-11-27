@@ -11,4 +11,4 @@ services:
       - API_HASH=YOURAPIHASH
       - SESSION=YOURSESSION
       - API_TOKEN=API_TOKEN
-      - API_URL=API_URL
+      - CHAT_ID=CHAT_ID
