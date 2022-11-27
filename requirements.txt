@@ -1,0 +1,6 @@
+black
+isort
+dynaconfig~=0.4
+requests~=2.28.1
+Telethon~=1.26.0
+dynaconf~=3.1.11
