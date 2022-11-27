@@ -79,7 +79,7 @@ jobs:
           context: .
           push: true
           file: Containerfile
-          tags: h0d0user/techpriest_bot:latest
+          tags: ${{ DOCKER_USERNAME }}/techpriest_bot:latest
 
       - name: Notify if failure
         if: ${{ failure() }}
@@ -116,6 +116,6 @@ jobs:
 
             Branch: ${{ github.ref }}
 
-            <b>Pushed image:</b> <code>docker pull h0d0user/techpriest_bot:latest</code>
+            <b>Pushed image:</b> <code>docker pull ${{ DOCKER_USERNAME }}/techpriest_bot:latest</code>
 
             See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}

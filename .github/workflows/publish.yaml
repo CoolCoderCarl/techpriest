@@ -74,7 +74,7 @@ jobs:
           context: .
           push: true
           file: Containerfile
-          tags: h0d0user/techpriest_bot:${{ needs.prepare.outputs.get_current_tag }}
+          tags: ${{ DOCKER_USERNAME }}/techpriest_bot:${{ needs.prepare.outputs.get_current_tag }}
 
       - name: Step To run on failure
         if: ${{ failure() }}
@@ -107,6 +107,6 @@ jobs:
 
             Branch: ${{ github.ref }}
 
-            <b>Pushed image:</b> <code>docker pull h0d0user/techpriest_bot:${{ needs.prepare.outputs.get_current_tag }}</code>
+            <b>Pushed image:</b> <code>docker pull ${{ DOCKER_USERNAME }}/techpriest_bot:${{ needs.prepare.outputs.get_current_tag }}</code>
 
             See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
