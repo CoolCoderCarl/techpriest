@@ -16,13 +16,13 @@ SESSION = os.environ["SESSION"]
 CLIENT = TelegramClient(SESSION, API_ID, API_HASH)
 
 # Telegram configuration
-API_TOKEN = os.environ["API_TOKEN"]
-API_URL = f"https://api.telegram.org/bot{API_TOKEN}/sendMessage"
-CHAT_ID = os.environ["CHAT_ID"]
+BOT_TOKEN = dynaconfig.settings["TELEGRAM"]["BOT_TOKEN"]
+API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+CHAT_ID = dynaconfig.settings["TELEGRAM"]["CHAT_ID"]
 
 # Search configuration
-SEARCH_QUERY = dynaconfig.settings["SEARCH_QUERY"]
-PLACES_TO_SEARCH = dynaconfig.settings["PLACES_TO_SEARCH"]
+SEARCH_QUERY = dynaconfig.settings["SEARCH"]["QUERY"]
+PLACES_TO_SEARCH = dynaconfig.settings["SEARCH"]["PLACES_TO_SEARCH"]
 
 # Logging
 logging.basicConfig(
