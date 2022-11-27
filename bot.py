@@ -1,8 +1,10 @@
 import logging
 import os
 import time
+from datetime import datetime, timedelta
 from typing import Dict
 
+import pytz as pytz
 import requests
 from telethon import TelegramClient
 
@@ -21,19 +23,24 @@ API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 CHAT_ID = dynaconfig.settings["TELEGRAM"]["CHAT_ID"]
 
 # Search configuration
-SEARCH_QUERY = dynaconfig.settings["SEARCH"]["QUERY"]
-PLACES_TO_SEARCH = dynaconfig.settings["SEARCH"]["PLACES_TO_SEARCH"]
+# SEARCH_QUERY = dynaconfig.settings["SEARCH"]["QUERY"]
+# PLACE_TO_SEARCH = dynaconfig.settings["SEARCH"]["PLACE_TO_SEARCH"]
+SEARCH_QUERY = os.environ["SEARCH_QUERY"]
+PLACE_TO_SEARCH = os.environ["PLACE_TO_SEARCH"]
 
 # Logging
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s", level=logging.WARNING
+)
+logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s", level=logging.ERROR
 )
 
 
-def send_message_to_telegram(message):
+def send_message_to_telegram(message: Dict):
     """
     Send messages from telegram to telegram
     :param message:
@@ -64,7 +71,8 @@ def send_message_to_telegram(message):
 
 
 def search() -> Dict:
-    for message in CLIENT.iter_messages(PLACES_TO_SEARCH, search=SEARCH_QUERY):
+    logging.info(f"Searching in {PLACE_TO_SEARCH} for {SEARCH_QUERY}.")
+    for message in CLIENT.iter_messages(PLACE_TO_SEARCH, search=SEARCH_QUERY):
         logging.info(f"MESSAGE MEDIA: {message.media}")
         yield {
             "TEXT": message.text,
@@ -75,8 +83,19 @@ def search() -> Dict:
 
 if __name__ == "__main__":
     CLIENT.start()
-    for i in search():
-        send_message_to_telegram(i)
-        time.sleep(5)
-    CLIENT.run_until_disconnected()
+    while True:
+        today = datetime.now().replace(tzinfo=pytz.UTC)
+        back_half_year = today - timedelta(days=60)
+        logging.info(f"Sending from {today} to {back_half_year} to the past.")
+        for message in search():
+            if message["DATE"] > back_half_year:
+                send_message_to_telegram(message)
+                time.sleep(5)
+            else:
+                logging.warning("Out of diapason of date ! Take a break for 5 min.")
+                time.sleep(300)
+        else:
+            logging.warning("All founded messages were sent ! Take a break for 5 min.")
+            time.sleep(300)
+    # CLIENT.run_until_disconnected()
     ### client.loop.run_until_complete(main())
