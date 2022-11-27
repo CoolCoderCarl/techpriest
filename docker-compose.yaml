@@ -11,3 +11,5 @@ services:
       - SESSION=YOURSESSION
       - API_TOKEN=API_TOKEN
       - CHAT_ID=CHAT_ID
+    volumes:
+      - "./settings.toml:/opt/settings.toml"
