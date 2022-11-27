@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  techpriest_bot:
+    container_name: techpriest_bot
+    image: h0d0user/techpriest_bot:latest
+    restart: always
+    network_mode: host
+    environment:
+      - API_ID=YOURAPIID
+      - API_HASH=YOURAPIHASH
+      - SESSION=YOURSESSION
+      - API_TOKEN=API_TOKEN
+      - CHAT_ID=CHAT_ID
