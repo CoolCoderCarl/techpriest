@@ -23,10 +23,8 @@ API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 CHAT_ID = dynaconfig.settings["TELEGRAM"]["CHAT_ID"]
 
 # Search configuration
-# SEARCH_QUERY = dynaconfig.settings["SEARCH"]["QUERY"]
-# PLACE_TO_SEARCH = dynaconfig.settings["SEARCH"]["PLACE_TO_SEARCH"]
-SEARCH_QUERY = os.environ["SEARCH_QUERY"]
-PLACE_TO_SEARCH = os.environ["PLACE_TO_SEARCH"]
+SEARCH_QUERY = dynaconfig.settings["SEARCH"]["QUERY"]
+PLACE_TO_SEARCH = dynaconfig.settings["SEARCH"]["PLACE_TO_SEARCH"]
 
 # Logging
 logging.basicConfig(
