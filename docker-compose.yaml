@@ -5,7 +5,6 @@ services:
     container_name: techpriest_bot
     image: h0d0user/techpriest_bot:latest
     restart: always
-    network_mode: host
     environment:
       - API_ID=YOURAPIID
       - API_HASH=YOURAPIHASH
