@@ -135,4 +135,4 @@ settings.toml
 *.session*
 
 # Search scheme
-search_scheme.txt
+search_*.txt
