@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Secret file
+settings.toml
+
+# Session journals
+*.session*
