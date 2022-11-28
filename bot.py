@@ -23,8 +23,9 @@ API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 CHAT_ID = dynaconfig.settings["TELEGRAM"]["CHAT_ID"]
 
 # Search configuration
+# TODO move this conf when uploaded from mongo will be ready
 SEARCH_QUERY = dynaconfig.settings["SEARCH"]["QUERY"]
-PLACE_TO_SEARCH = dynaconfig.settings["SEARCH"]["PLACE_TO_SEARCH"]
+SEARCH_PLACES = dynaconfig.settings["SEARCH"]["SEARCH_PLACES"]
 
 # Logging
 logging.basicConfig(
@@ -69,8 +70,8 @@ def send_message_to_telegram(message: Dict):
 
 
 def search() -> Dict:
-    logging.info(f"Searching in {PLACE_TO_SEARCH} for {SEARCH_QUERY}.")
-    for message in CLIENT.iter_messages(PLACE_TO_SEARCH, search=SEARCH_QUERY):
+    logging.info(f"Searching in {SEARCH_PLACES} for {SEARCH_QUERY}.")
+    for message in CLIENT.iter_messages(SEARCH_PLACES, search=SEARCH_QUERY):
         logging.info(f"MESSAGE MEDIA: {message.media}")
         yield {
             "TEXT": message.text,
