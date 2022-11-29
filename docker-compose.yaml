@@ -1,6 +1,19 @@
 version: '3'
 
 services:
+
+  search_mongodb:
+    container_name: search_mongodb
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_DATABASE=searchdb
+      - MONGO_INITDB_ROOT_USERNAME=username
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    networks:
+      - mongo_net
+    ports:
+      - 27017:27017
+
   techpriest_bot:
     container_name: techpriest_bot
     image: h0d0user/techpriest_bot:latest
@@ -9,6 +22,11 @@ services:
       - API_ID=YOURAPIID
       - API_HASH=YOURAPIHASH
       - SESSION=YOURSESSION
+    networks:
+      - mongo_net
     volumes:
       - "./settings.toml:/opt/settings.toml"
       - "./JustTalk.session:/opt/JustTalk.session"
+
+networks:
+  mongo_net:
