@@ -110,11 +110,11 @@ def main():
                     if message["DATE"] > search_depth_days:
                         send_message_to_telegram(message, chat_id)
                         time.sleep(5)
-                    else:
-                        logging.warning(
-                            "Out of diapason of date ! Take a break for 5 min."
-                        )
-                        time.sleep(300)
+                    # else:
+                    #     logging.warning(
+                    #         "Out of diapason of date ! Take a break for 5 min."
+                    #     )
+                    #     time.sleep(300)
                 else:
                     logging.warning(
                         "All founded messages were sent ! Take a break for 5 min."
