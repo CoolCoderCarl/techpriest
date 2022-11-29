@@ -1,9 +1,10 @@
 import logging
-import os
 from pathlib import Path
 from typing import Dict
 
 import pymongo
+
+import dynaconfig
 
 # Logging
 logging.basicConfig(
@@ -18,8 +19,8 @@ logging.basicConfig(
 
 
 class MongoDB:
-    # __MONGO_URL = "mongodb://localhost:27017/"  # os.environ["MONGO_URL"]
-    __MONGO_URL = "mongodb://search_mongodb:27017/"  # os.environ["MONGO_URL"]
+    # __MONGO_URL = "mongodb://localhost:27017/"  # Use for local test
+    __MONGO_URL = "mongodb://search_mongodb:27017/"  # Use to build image
 
     try:
         __SEARCH_SCHEME_FILE = Path("search_scheme.txt")
@@ -28,11 +29,16 @@ class MongoDB:
         logging.error(file_not_found)
         exit(1)
 
+    # Authorization to mongodb
+    __USERNAME = dynaconfig.settings["MONGODB"]["USERNAME"]
+    __PASSWORD = dynaconfig.settings["MONGODB"]["PASSWORD"]
+
     # DB content
     __SEARCH_DB_NAME = "searchdb"
     __SEARCH_DB_TABLE = "searchtable"
 
-    __mongo_client = pymongo.MongoClient(__MONGO_URL)
+    # __mongo_client = pymongo.MongoClient(__MONGO_URL)  # Use for local test
+    __mongo_client = pymongo.MongoClient(__MONGO_URL, username=__USERNAME, password=__PASSWORD) # Use to build image
     __searchdb = __mongo_client[__SEARCH_DB_NAME]
     __search_collection = __searchdb[__SEARCH_DB_TABLE]
 
@@ -80,7 +86,7 @@ class MongoDB:
         for db in self.__search_collection.find():
             logging.warning(f"The object ID {db['_id']} going to delete.")
             del db["_id"]
-            logging.info("The ID was deleted.")
+            logging.warning("The ID was deleted !")
             return db
 
 
