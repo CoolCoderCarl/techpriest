@@ -38,7 +38,9 @@ class MongoDB:
     __SEARCH_DB_TABLE = "searchtable"
 
     # __mongo_client = pymongo.MongoClient(__MONGO_URL)  # Use for local test
-    __mongo_client = pymongo.MongoClient(__MONGO_URL, username=__USERNAME, password=__PASSWORD) # Use to build image
+    __mongo_client = pymongo.MongoClient(
+        __MONGO_URL, username=__USERNAME, password=__PASSWORD
+    )  # Use to build image
     __searchdb = __mongo_client[__SEARCH_DB_NAME]
     __search_collection = __searchdb[__SEARCH_DB_TABLE]
 
@@ -91,10 +93,10 @@ class MongoDB:
 
 
 if __name__ == "__main__":
-    cranial_scheme = MongoDB()
+    # cranial_scheme = MongoDB()
     # while True:
-    if cranial_scheme.is_db_exist():
-        logging.info(cranial_scheme.get_data_from_db())
-    else:
-        logging.info(cranial_scheme.get_data_from_db())
+    # if cranial_scheme.is_db_exist():
+    #     logging.info(cranial_scheme.get_data_from_db())
+    # else:
+    #     logging.info(cranial_scheme.get_data_from_db())
     pass

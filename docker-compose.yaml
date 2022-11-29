@@ -26,6 +26,8 @@ services:
       - mongo_net
     volumes:
       - "./settings.toml:/opt/settings.toml"
+      - "./search_scheme.toml:/opt/search_scheme.toml"
+      - "./search_places.toml:/opt/search_places.toml"
       - "./JustTalk.session:/opt/JustTalk.session"
 
 networks:
