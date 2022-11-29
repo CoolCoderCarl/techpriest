@@ -76,7 +76,7 @@ def send_message_to_telegram(message: Dict, chat_id: str):
             logging.info(
                 f"Sent: {response.reason}. Status code: {response.status_code}"
             )
-            logging.error(f"Detailed response: {response.text}")
+            logging.info(f"Detailed response: {response.text}")
         else:
             logging.error(
                 f"Not sent: {response.reason}. Status code: {response.status_code}"
