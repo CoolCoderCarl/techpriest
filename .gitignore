@@ -133,3 +133,6 @@ settings.toml
 
 # Session journals
 *.session*
+
+# Search scheme
+search_*.txt
