@@ -24,6 +24,8 @@ services:
       - SESSION=YOURSESSION
     networks:
       - mongo_net
+    depends_on:
+      - search_mongodb
     volumes:
       - "./settings.toml:/opt/settings.toml"
       - "./search_scheme.toml:/opt/search_scheme.toml"
