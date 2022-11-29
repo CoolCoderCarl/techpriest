@@ -18,12 +18,12 @@ logging.basicConfig(
 
 
 class MongoDB:
-    __MONGO_URL = "mongodb://localhost:27017/"  # os.environ["MONGO_URL"]
+    # __MONGO_URL = "mongodb://localhost:27017/"  # os.environ["MONGO_URL"]
+    __MONGO_URL = "mongodb://search_mongodb:27017/"  # os.environ["MONGO_URL"]
 
     try:
         __SEARCH_SCHEME_FILE = Path("search_scheme.txt")
-        __SEARCH_PLACES_LIST = Path("search_places.txt")
-        logging.info("Files load successfully !")
+        logging.info("File load successfully !")
     except FileNotFoundError as file_not_found:
         logging.error(file_not_found)
         exit(1)
@@ -85,9 +85,10 @@ class MongoDB:
 
 
 if __name__ == "__main__":
-    # cranial_scheme = MongoDB()
-    # if cranial_scheme.is_db_exist():
-    #     print(cranial_scheme.get_data_from_db())
-    # else:
-    #     print(cranial_scheme.get_data_from_db())
-    pass
+    while True:
+        cranial_scheme = MongoDB()
+        if cranial_scheme.is_db_exist():
+            logging.info(cranial_scheme.get_data_from_db())
+        else:
+            logging.info(cranial_scheme.get_data_from_db())
+        pass

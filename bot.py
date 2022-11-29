@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Dict
 
 import pytz as pytz
@@ -25,7 +26,16 @@ CHAT_ID = dynaconfig.settings["TELEGRAM"]["CHAT_ID"]
 # Search configuration
 # TODO move this conf when uploaded from mongo will be ready
 SEARCH_QUERY = dynaconfig.settings["SEARCH"]["QUERY"]
-SEARCH_PLACES = dynaconfig.settings["SEARCH"]["SEARCH_PLACES"]
+SEARCH_PLACES_LIST = Path("search_places.txt")
+
+SEARCH_PLACES = "#plug"
+
+try:
+    __SEARCH_SCHEME_FILE = Path("search_scheme.txt")
+    logging.info("File load successfully !")
+except FileNotFoundError as file_not_found:
+    logging.error(file_not_found)
+    exit(1)
 
 # Logging
 logging.basicConfig(
@@ -71,6 +81,7 @@ def send_message_to_telegram(message: Dict):
 
 def search() -> Dict:
     logging.info(f"Searching in {SEARCH_PLACES} for {SEARCH_QUERY}.")
+    # TODO mongodb get_data_from_db() ??
     for message in CLIENT.iter_messages(SEARCH_PLACES, search=SEARCH_QUERY):
         logging.info(f"MESSAGE MEDIA: {message.media}")
         yield {
