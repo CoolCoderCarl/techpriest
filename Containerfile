@@ -3,6 +3,7 @@ FROM python:3.9-alpine as builder
 WORKDIR /opt
 
 COPY ["bot.py", "/opt/"]
+COPY ["mongodb.py", "/opt/"]
 COPY ["dynaconfig.py", "/opt/"]
 COPY requirements.txt requirements.txt
 
