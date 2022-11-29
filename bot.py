@@ -76,7 +76,6 @@ def send_message_to_telegram(message: Dict, chat_id: str):
             logging.info(
                 f"Sent: {response.reason}. Status code: {response.status_code}"
             )
-            logging.info(f"Detailed response: {response.text}")
         else:
             logging.error(
                 f"Not sent: {response.reason}. Status code: {response.status_code}"
@@ -86,43 +85,37 @@ def send_message_to_telegram(message: Dict, chat_id: str):
         logging.error(err)
 
 
-def is_date_diapason(message) -> bool:
+def search_depth_days() -> datetime:
     today = datetime.now().replace(tzinfo=pytz.UTC)
-    search_depth_days = today - timedelta(days=SEARCH_DEPTH_DAYS)
-    logging.info(f"Sending from {today} to {search_depth_days} to the past.")
-    time.sleep(5)
-    if message["DATE"] > search_depth_days:
-        return True
-    else:
-        return False
+    result = today - timedelta(days=SEARCH_DEPTH_DAYS)
+    logging.info(f"Diapason is from {today} to {result}.")
+    return result
 
 
 def search(search_places: str, search_query: str) -> Dict:
     for message in CLIENT.iter_messages(search_places, search=search_query):
         logging.info(f"MESSAGE MEDIA: {message.media}")
-        if is_date_diapason(message):
-            yield {
-                "TEXT": message.text,
-                "DATE": message.date,
-                "MSG_URL": f"https://t.me/c/{message.peer_id.channel_id}/{message.id}",
-            }
-        else:
-            logging.info("Diapason was reached !")
-            time.sleep(10)
-            break
+        yield {
+            "TEXT": message.text,
+            "DATE": message.date,
+            "MSG_URL": f"https://t.me/c/{message.peer_id.channel_id}/{message.id}",
+        }
 
 
 def main():
     while True:
+        s_d_d = search_depth_days()
+        time.sleep(60)
         for places_to_search in load_search_places_file():
             for chat_id, search_query in cranial_scheme.get_data_from_db().items():
                 logging.info(
                     f"Searching in {places_to_search} | for {search_query} | send to {chat_id}"
                 )
-                time.sleep(5)
+                time.sleep(60)
                 for message in search(places_to_search, search_query):
-                    send_message_to_telegram(message, chat_id)
-                    time.sleep(10)
+                    if message["DATE"] > s_d_d:
+                        send_message_to_telegram(message, chat_id)
+                        time.sleep(60)
                 else:
                     logging.info(
                         f"All founded messages about {search_query} in {places_to_search} were sent to {chat_id} !"
@@ -133,6 +126,6 @@ def main():
 
 if __name__ == "__main__":
     CLIENT.start()
-    main()
+    # main()
     # CLIENT.run_until_disconnected()
-    # client.loop.run_until_complete(main())
+    CLIENT.loop.run_until_complete(main())
