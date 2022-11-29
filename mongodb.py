@@ -85,10 +85,10 @@ class MongoDB:
 
 
 if __name__ == "__main__":
-    while True:
-        cranial_scheme = MongoDB()
-        if cranial_scheme.is_db_exist():
-            logging.info(cranial_scheme.get_data_from_db())
-        else:
-            logging.info(cranial_scheme.get_data_from_db())
-        pass
+    cranial_scheme = MongoDB()
+    # while True:
+    if cranial_scheme.is_db_exist():
+        logging.info(cranial_scheme.get_data_from_db())
+    else:
+        logging.info(cranial_scheme.get_data_from_db())
+    pass
