@@ -106,6 +106,10 @@ def search(search_places: str, search_query: str) -> Dict:
                 "DATE": message.date,
                 "MSG_URL": f"https://t.me/c/{message.peer_id.channel_id}/{message.id}",
             }
+        else:
+            logging.info("Diapason was reached !")
+            time.sleep(10)
+            break
 
 
 def main():
