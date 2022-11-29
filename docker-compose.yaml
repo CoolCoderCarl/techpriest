@@ -28,8 +28,8 @@ services:
       - search_mongodb
     volumes:
       - "./settings.toml:/opt/settings.toml"
-      - "./search_scheme.toml:/opt/search_scheme.toml"
-      - "./search_places.toml:/opt/search_places.toml"
+      - "./search_scheme.txt:/opt/search_scheme.txt"
+      - "./search_places.txt:/opt/search_places.txt"
       - "./JustTalk.session:/opt/JustTalk.session"
 
 networks:
