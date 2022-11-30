@@ -2,7 +2,7 @@ drestart: dstop dstart
 
 dstart:
 	echo "Starting docker-compose deattahced"
-	docker-compose --env-file .custom_env_file up -d
+	docker-compose up -d
 
 dstop:
 	echo "Stopping docker-compose"
