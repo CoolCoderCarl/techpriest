@@ -9,7 +9,6 @@ import pytz as pytz
 import requests
 from telethon import TelegramClient
 
-# import dynaconfig
 import mongodb
 
 # Session configuration
@@ -20,7 +19,6 @@ SESSION = os.environ["SESSION"]
 CLIENT = TelegramClient(SESSION, API_ID, API_HASH)
 
 # Telegram configuration
-# BOT_TOKEN = dynaconfig.settings["TELEGRAM"]["BOT_TOKEN"]
 BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
@@ -110,21 +108,26 @@ def search(search_places: str, search_query: str) -> Dict:
     for message in CLIENT.iter_messages(search_places, search=search_query):
         logging.info(f"MESSAGE MEDIA: {message.media}")
         messages_ids = get_messages_ids(search_places, search_query)
-        if cranial_scheme.is_inserted(str(message.peer_id.channel_id)):
+        if cranial_scheme.is_message_id_exist(message.peer_id.channel_id, message.id):
             logging.warning(
-                f"Already inserted key {message.peer_id.channel_id} with values {messages_ids}."
+                f"Message with ID {messages_ids} already exist from channel {message.peer_id.channel_id}."
             )
+            if cranial_scheme.is_inserted(str(message.peer_id.channel_id)):
+                logging.warning(
+                    f"Already inserted key {message.peer_id.channel_id} with values {messages_ids}."
+                )
+            else:
+                cranial_scheme.insert_data_to_db(
+                    {str(message.peer_id.channel_id): messages_ids},
+                    cranial_scheme.MESSAGES_IDS_DB,
+                    cranial_scheme.messagesids_collection,
+                )
         else:
-            cranial_scheme.insert_data_to_db(
-                {str(message.peer_id.channel_id): messages_ids},
-                cranial_scheme.MESSAGES_IDS_DB,
-                cranial_scheme.messagesids_collection,
-            )
-        yield {
-            "TEXT": message.text,
-            "DATE": message.date,
-            "MSG_URL": f"https://t.me/c/{message.peer_id.channel_id}/{message.id}",
-        }
+            yield {
+                "TEXT": message.text,
+                "DATE": message.date,
+                "MSG_URL": f"https://t.me/c/{message.peer_id.channel_id}/{message.id}",
+            }
 
 
 def main():
@@ -140,6 +143,7 @@ def main():
                 for message in search(places_to_search, search_query):
                     if message["DATE"] > s_d_d:
                         send_message_to_telegram(message, chat_id)
+                        # print('Send to telegram')
                         time.sleep(60)
                 else:
                     logging.info(

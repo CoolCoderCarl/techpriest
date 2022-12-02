@@ -5,8 +5,6 @@ from typing import Dict
 
 import pymongo
 
-import dynaconfig
-
 # Logging
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -31,8 +29,6 @@ class MongoDB:
         exit(1)
 
     # Authorization to mongodb
-    # __USERNAME = dynaconfig.settings["MONGODB"]["USERNAME"]
-    # __PASSWORD = dynaconfig.settings["MONGODB"]["PASSWORD"]
     __USERNAME = os.environ["MONGO_ROOT_USERNAME"]
     __PASSWORD = os.environ["MONGO_ROOT_PASSWORD"]
 
@@ -86,7 +82,6 @@ class MongoDB:
             # raise Exception
 
     def __init__(self):
-        # def purge_db_at_start(self):
         self.__mongo_client.drop_database(self.__SEARCH_DB_NAME)
         self.__mongo_client.drop_database(self.MESSAGES_IDS_DB)
         logging.warning(f"Database was purged at start {self.__SEARCH_DB_NAME} !")
@@ -105,7 +100,24 @@ class MongoDB:
             logging.warning(f"Database {self.__searchdb} do not exists !")
             return False
 
+    def is_message_id_exist(self, channel_id: str, message_id: int) -> bool:
+        for object_entry in self.messagesids_collection.find({}, {str(channel_id): 1}):
+            # print(f"Object entry {object_entry}")
+            # print(type(object_entry))
+            try:
+                for i in object_entry[str(channel_id)]:
+                    if message_id == i:
+                        # print(type(i))
+                        return True
+            except KeyError as key_err:
+                logging.error(key_err)
+                return False
+
     def get_data_from_db(self) -> Dict:
+        """
+        Get data from Search DB collection
+        :return:
+        """
         for db in self.__search_collection.find():
             logging.warning(f"The object ID {db['_id']} going to delete.")
             del db["_id"]
@@ -113,8 +125,10 @@ class MongoDB:
             return db
 
     def is_inserted(self, channel_id):
-        for i in self.messagesids_collection.find({channel_id: {"$exists": True}}):
-            if channel_id in i:
+        for object_entry in self.messagesids_collection.find(
+            {channel_id: {"$exists": True}}
+        ):
+            if channel_id in object_entry:
                 return True
             else:
                 return False
