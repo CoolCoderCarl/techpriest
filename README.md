@@ -24,4 +24,7 @@ In case you got:
 }
 ```
 Initiate: 
-https://api.telegram.org/bot_BOT_TOKEN_/sendMessage?chat_id=_CHAT_ID_&text=START
+`https://api.telegram.org/bot_BOT_TOKEN_/sendMessage?chat_id=_CHAT_ID_&text=START`
+
+For troubleshoot some issues:
+`https://api.telegram.org/bot_BOT_TOKEN_/getUpdates`
