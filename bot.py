@@ -3,7 +3,7 @@ import os
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 import pytz as pytz
 import requests
@@ -11,7 +11,6 @@ from telethon import TelegramClient
 
 import mongodb
 
-# Session configuration
 API_ID = os.environ["API_ID"]
 API_HASH = os.environ["API_HASH"]
 SESSION = os.environ["SESSION"]
@@ -97,32 +96,22 @@ def search_depth_days() -> datetime:
     return result
 
 
-def get_messages_ids(search_places: str, search_query: str) -> List:
-    return [
-        message.id
-        for message in CLIENT.iter_messages(search_places, search=search_query)
-    ]
-
-
 def search(search_places: str, search_query: str) -> Dict:
-    for message in CLIENT.iter_messages(search_places, search=search_query):
+    for message in CLIENT.iter_messages(
+        search_places, search=search_query, reverse=True
+    ):
         logging.info(f"MESSAGE MEDIA: {message.media}")
-        messages_ids = get_messages_ids(search_places, search_query)
         if cranial_scheme.is_message_id_exist(message.peer_id.channel_id, message.id):
             logging.warning(
-                f"Message with ID {messages_ids} already exist from channel {message.peer_id.channel_id}."
+                f"Message with ID {message.id} already exist in db from channel {message.peer_id.channel_id}."
             )
-            if cranial_scheme.is_inserted(str(message.peer_id.channel_id)):
-                logging.warning(
-                    f"Already inserted key {message.peer_id.channel_id} with values {messages_ids}."
-                )
-            else:
-                cranial_scheme.insert_data_to_db(
-                    {str(message.peer_id.channel_id): messages_ids},
-                    cranial_scheme.MESSAGES_IDS_DB,
-                    cranial_scheme.messagesids_collection,
-                )
+            time.sleep(2)
         else:
+            cranial_scheme.insert_data_to_db(
+                data_to_insert={str(message.peer_id.channel_id): str(message.id)},
+                database_name=cranial_scheme.MESSAGES_IDS_DB,
+                collection=cranial_scheme.messagesids_collection,
+            )
             yield {
                 "TEXT": message.text,
                 "DATE": message.date,
@@ -135,7 +124,9 @@ def main():
         s_d_d = search_depth_days()
         time.sleep(60)
         for places_to_search in load_search_places_file():
-            for chat_id, search_query in cranial_scheme.get_data_from_db().items():
+            for chat_id, search_query in cranial_scheme.get_data_from_db(
+                "searchdb"
+            ).items():
                 logging.info(
                     f"Searching in {places_to_search} | for {search_query} | send to {chat_id}"
                 )

@@ -83,9 +83,9 @@ class MongoDB:
 
     def __init__(self):
         self.__mongo_client.drop_database(self.__SEARCH_DB_NAME)
-        self.__mongo_client.drop_database(self.MESSAGES_IDS_DB)
+        # self.__mongo_client.drop_database(self.MESSAGES_IDS_DB)
         logging.warning(f"Database was purged at start {self.__SEARCH_DB_NAME} !")
-        logging.warning(f"Database was purged at start {self.MESSAGES_IDS_DB} !")
+        # logging.warning(f"Database was purged at start {self.MESSAGES_IDS_DB} !")
         self.insert_data_to_db(
             self.__load_data_from_file(self.__SEARCH_SCHEME_FILE),
             self.__SEARCH_DB_NAME,
@@ -100,29 +100,41 @@ class MongoDB:
             logging.warning(f"Database {self.__searchdb} do not exists !")
             return False
 
-    def is_message_id_exist(self, channel_id: str, message_id: int) -> bool:
-        for object_entry in self.messagesids_collection.find({}, {str(channel_id): 1}):
-            # print(f"Object entry {object_entry}")
-            # print(type(object_entry))
+    def is_message_id_exist(self, channel_id: str, message_id: str) -> bool:
+        for object_entry in self.messagesids_collection.find():
             try:
-                for i in object_entry[str(channel_id)]:
-                    if message_id == i:
-                        # print(type(i))
-                        return True
+                if str(message_id) == str(object_entry[str(channel_id)]):
+                    return True
+                else:
+                    return False
             except KeyError as key_err:
                 logging.error(key_err)
                 return False
+            except BaseException as base_exception:
+                logging.error(base_exception)
+                return False
 
-    def get_data_from_db(self) -> Dict:
+    def get_data_from_db(self, collection_name) -> Dict:
         """
         Get data from Search DB collection
         :return:
         """
-        for db in self.__search_collection.find():
-            logging.warning(f"The object ID {db['_id']} going to delete.")
-            del db["_id"]
-            logging.warning("The ID was deleted !")
-            return db
+        if collection_name == "searchdb":
+            for db in self.__search_collection.find():
+                logging.warning(f"The object ID {db['_id']} going to delete.")
+                del db["_id"]
+                logging.warning(
+                    f"The ID was deleted for response in db {collection_name}!"
+                )
+                return db
+        elif collection_name == "messagesidsdb":
+            for db in self.messagesids_collection.find():
+                logging.warning(f"The object ID {db['_id']} going to delete.")
+                del db["_id"]
+                logging.warning(
+                    f"The ID was deleted for response in db {collection_name}!"
+                )
+                return db
 
     def is_inserted(self, channel_id):
         for object_entry in self.messagesids_collection.find(
