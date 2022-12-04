@@ -97,32 +97,39 @@ def search_depth_days() -> datetime:
 
 
 def search(search_places: str, search_query: str) -> Dict:
+    s_d_d = search_depth_days()
+    time.sleep(60)
     for message in CLIENT.iter_messages(
         search_places, search=search_query, reverse=True
     ):
         logging.info(f"MESSAGE MEDIA: {message.media}")
-        if cranial_scheme.is_message_id_exist(message.peer_id.channel_id, message.id):
-            logging.warning(
-                f"Message with ID {message.id} already exist in db from channel {message.peer_id.channel_id}."
-            )
-            time.sleep(2)
+        if message.date > s_d_d:
+            if cranial_scheme.is_message_id_exist(
+                message.peer_id.channel_id, message.id
+            ):
+                logging.warning(
+                    f"Message with ID {message.id} already exist in db from channel {message.peer_id.channel_id}."
+                )
+                time.sleep(2)
+            else:
+                cranial_scheme.insert_data_to_db(
+                    data_to_insert={str(message.peer_id.channel_id): str(message.id)},
+                    database_name=cranial_scheme.MESSAGES_IDS_DB,
+                    collection=cranial_scheme.messagesids_collection,
+                )
+                yield {
+                    "TEXT": message.text,
+                    "DATE": message.date,
+                    "MSG_URL": f"https://t.me/c/{message.peer_id.channel_id}/{message.id}",
+                }
         else:
-            cranial_scheme.insert_data_to_db(
-                data_to_insert={str(message.peer_id.channel_id): str(message.id)},
-                database_name=cranial_scheme.MESSAGES_IDS_DB,
-                collection=cranial_scheme.messagesids_collection,
+            logging.warning(
+                f"Wrong date diapason {message.date} < {s_d_d} | Skipping..."
             )
-            yield {
-                "TEXT": message.text,
-                "DATE": message.date,
-                "MSG_URL": f"https://t.me/c/{message.peer_id.channel_id}/{message.id}",
-            }
 
 
 def main():
     while True:
-        s_d_d = search_depth_days()
-        time.sleep(60)
         for places_to_search in load_search_places_file():
             for chat_id, search_query in cranial_scheme.get_data_from_db(
                 "searchdb"
@@ -132,10 +139,9 @@ def main():
                 )
                 time.sleep(60)
                 for message in search(places_to_search, search_query):
-                    if message["DATE"] > s_d_d:
-                        send_message_to_telegram(message, chat_id)
-                        # print('Send to telegram')
-                        time.sleep(60)
+                    send_message_to_telegram(message, chat_id)
+                    # print('Send to telegram')
+                    time.sleep(60)
                 else:
                     logging.info(
                         f"All founded messages about {search_query} in {places_to_search} were sent to {chat_id} !"
