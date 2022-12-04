@@ -22,6 +22,9 @@ services:
       - API_ID=YOURAPIID
       - API_HASH=YOURAPIHASH
       - SESSION=YOURSESSION
+      - TELEGRAM_BOT_TOKEN=TELEGRAM_BOT_TOKEN
+      - MONGO_ROOT_USERNAME=username
+      - MONGO_ROOT_PASSWORD=password
     networks:
       - mongo_net
     depends_on:
