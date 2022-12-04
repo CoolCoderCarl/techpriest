@@ -92,7 +92,7 @@ def send_message_to_telegram(message: Dict, chat_id: str):
 def search_depth_days() -> datetime:
     today = datetime.now().replace(tzinfo=pytz.UTC)
     result = today - timedelta(days=SEARCH_DEPTH_DAYS)
-    logging.info(f"Diapason is from {today} to {result}.")
+    logging.warning(f"Diapason is from {today} to {result}.")
     return result
 
 
