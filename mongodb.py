@@ -63,10 +63,10 @@ class MongoDB:
                 return result
         except FileExistsError as file_exist_err:
             logging.error(file_exist_err)
-            return {}
+            exit()
         except BaseException as base_exception:
             logging.error(base_exception)
-            return {}
+            exit()
 
     def insert_data_to_db(self, data_to_insert, database_name: str, collection):
         try:
