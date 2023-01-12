@@ -83,9 +83,9 @@ class MongoDB:
 
     def __init__(self):
         self.__mongo_client.drop_database(self.__SEARCH_DB_NAME)
-        # self.__mongo_client.drop_database(self.MESSAGES_IDS_DB)
+        self.__mongo_client.drop_database(self.MESSAGES_IDS_DB)
         logging.warning(f"Database was purged at start {self.__SEARCH_DB_NAME} !")
-        # logging.warning(f"Database was purged at start {self.MESSAGES_IDS_DB} !")
+        logging.warning(f"Database was purged at start {self.MESSAGES_IDS_DB} !")
         self.insert_data_to_db(
             self.__load_data_from_file(self.__SEARCH_SCHEME_FILE),
             self.__SEARCH_DB_NAME,

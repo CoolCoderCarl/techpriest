@@ -29,6 +29,18 @@ except FileNotFoundError as file_not_found:
     logging.error(file_not_found)
     exit(1)
 
+
+def load_search_places_file():
+    try:
+        with open(SEARCH_PLACES_LIST, mode="r") as s_p_l:
+            result = [place for place in s_p_l.read().split()]
+            logging.info(f"Places load successfully !")
+            return result
+    except FileNotFoundError as file_not_found:
+        logging.error(file_not_found)
+        exit(1)
+
+
 SEARCH_DEPTH_DAYS = 60
 
 
@@ -44,17 +56,6 @@ logging.basicConfig(
 )
 
 cranial_scheme = mongodb.MongoDB()
-
-
-def load_search_places_file():
-    try:
-        with open(SEARCH_PLACES_LIST, mode="r") as s_p_l:
-            result = [place for place in s_p_l.read().split()]
-            logging.info("File load successfully !")
-            return result
-    except FileNotFoundError as file_not_found:
-        logging.error(file_not_found)
-        exit(1)
 
 
 def send_message_to_telegram(message: Dict, chat_id: str):
