@@ -56,6 +56,11 @@ class MongoDB:
     # TODO Add validation func to check is data correct
 
     def __load_data_from_file(self, search_scheme: str) -> Dict:
+        """
+        Load search scheme to database
+        :param search_scheme:
+        :return:
+        """
         try:
             with open(search_scheme, mode="r", encoding="UTF-8") as file:
                 result = dict(x.rstrip().split() for x in file)
@@ -63,10 +68,10 @@ class MongoDB:
                 return result
         except FileExistsError as file_exist_err:
             logging.error(file_exist_err)
-            return {}
+            exit()
         except BaseException as base_exception:
             logging.error(base_exception)
-            return {}
+            exit()
 
     def insert_data_to_db(self, data_to_insert, database_name: str, collection):
         try:
@@ -99,6 +104,8 @@ class MongoDB:
         else:
             logging.warning(f"Database {self.__searchdb} do not exists !")
             return False
+
+    # TODO Need check if work correctly
 
     def is_message_id_exist(self, channel_id: str, message_id: str) -> bool:
         for object_entry in self.messagesids_collection.find():

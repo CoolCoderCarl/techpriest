@@ -18,8 +18,8 @@ SESSION = os.environ["SESSION"]
 CLIENT = TelegramClient(SESSION, API_ID, API_HASH)
 
 # Telegram configuration
-BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
-API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+TELEGRAM_API_URL = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
 
 # Search configuration
 try:
@@ -67,7 +67,7 @@ def send_message_to_telegram(message: Dict, chat_id: str):
     """
     try:
         response = requests.post(
-            API_URL,
+            TELEGRAM_API_URL,
             json={
                 "chat_id": chat_id,
                 "text": f"{message['TEXT']}\n"
