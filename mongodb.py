@@ -124,6 +124,7 @@ class MongoDB:
     def get_data_from_db(self, collection_name) -> Dict:
         """
         Get data from Search DB collection
+        Remove "_id" key before return result
         :return:
         """
         if collection_name == "searchdb":
