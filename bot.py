@@ -87,7 +87,7 @@ def send_message_to_telegram(message: Dict, chat_id: str):
             )
             logging.error(f"Detailed response: {response.text}")
     except Exception as err:
-        logging.error(err)
+        logging.error(f"Err while sending to telegram: {err}")
 
 
 def search_depth_days() -> datetime:
