@@ -31,6 +31,10 @@ except FileNotFoundError as file_not_found:
 
 
 def load_search_places_file():
+    """
+    Load file contain places where to search
+    :return:
+    """
     try:
         with open(SEARCH_PLACES_LIST, mode="r") as s_p_l:
             result = [place for place in s_p_l.read().split()]
@@ -41,6 +45,7 @@ def load_search_places_file():
         exit(1)
 
 
+# Search depth
 SEARCH_DEPTH_DAYS = 60
 
 
