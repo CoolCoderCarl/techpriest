@@ -74,6 +74,13 @@ class MongoDB:
             exit()
 
     def insert_data_to_db(self, data_to_insert, database_name: str, collection):
+        """
+        Insert data to any database
+        :param data_to_insert:
+        :param database_name:
+        :param collection:
+        :return:
+        """
         try:
             object_id = collection.insert_one(data_to_insert)
             logging.info(
@@ -87,6 +94,9 @@ class MongoDB:
             # raise Exception
 
     def __init__(self):
+        """
+        At start just clean all the records
+        """
         self.__mongo_client.drop_database(self.__SEARCH_DB_NAME)
         self.__mongo_client.drop_database(self.MESSAGES_IDS_DB)
         logging.warning(f"Database was purged at start {self.__SEARCH_DB_NAME} !")
@@ -105,25 +115,29 @@ class MongoDB:
             logging.warning(f"Database {self.__searchdb} do not exists !")
             return False
 
-    # TODO Need check if work correctly
-
     def is_message_id_exist(self, channel_id: str, message_id: str) -> bool:
         for object_entry in self.messagesids_collection.find():
             try:
+                # TODO Need check if work correctly
                 if str(message_id) == str(object_entry[str(channel_id)]):
+                    logging.info(
+                        f"The message ID: {message_id} equal to found one: {object_entry[str(channel_id)]}"
+                    )
                     return True
                 else:
+                    logging.warning(f"There are not found such an ID - {message_id}")
                     return False
             except KeyError as key_err:
-                logging.error(key_err)
+                logging.error(f"Err while checking existing messages {key_err}")
                 return False
             except BaseException as base_exception:
-                logging.error(base_exception)
+                logging.error(f"Err while checking existing messages {base_exception}")
                 return False
 
     def get_data_from_db(self, collection_name) -> Dict:
         """
         Get data from Search DB collection
+        Remove "_id" key before return result
         :return:
         """
         if collection_name == "searchdb":
